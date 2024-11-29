@@ -315,3 +315,18 @@
         )
     )
 )
+
+;; Read-only Functions
+(define-read-only (get-contract-status)
+    ;; Get the current status of the contract including paused state, total deposited, and next leaf index
+    (ok {
+        paused: (var-get contract-paused),
+        total-deposited: (var-get total-deposited),
+        next-leaf-index: (var-get next-leaf-index)
+    })
+)
+
+(define-read-only (get-current-root)
+    ;; Get the current Merkle root
+    (ok (var-get merkle-root))
+)
