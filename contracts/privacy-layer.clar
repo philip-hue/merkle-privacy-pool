@@ -34,3 +34,34 @@
 
 ;; Contract Owner
 (define-constant CONTRACT-OWNER tx-sender)
+
+;; State Variables
+(define-data-var merkle-root (buff 32) ZERO-VALUE)
+(define-data-var next-leaf-index uint u0)
+(define-data-var contract-paused bool false)
+(define-data-var total-deposited uint u0)
+
+;; Storage Maps
+(define-map deposit-records 
+    { commitment: (buff 32) } 
+    { 
+        leaf-index: uint, 
+        block-height: uint,
+        depositor: principal,
+        amount: uint 
+    }
+)
+
+(define-map nullifier-status 
+    { nullifier: (buff 32) } 
+    { 
+        used: bool, 
+        withdrawn-amount: uint,
+        withdrawn-at: uint 
+    }
+)
+
+(define-map merkle-nodes 
+    { level: uint, index: uint } 
+    { node-hash: (buff 32) }
+)
