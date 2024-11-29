@@ -155,3 +155,37 @@
                 (combine-hashes current-node sibling-node)))
     )
 )
+
+;; Verification Helpers
+(define-private (verify-proof-step
+    (proof-element (buff 32))
+    (state { current-hash: (buff 32), is-valid: bool }))
+    ;; Verify a single step in the Merkle proof by combining the current hash with the proof element
+    (let (
+        (current-hash (get current-hash state))
+        (combined-hash (combine-hashes current-hash proof-element))
+    )
+        {
+            current-hash: combined-hash,
+            is-valid: (and 
+                (get is-valid state) 
+                (is-valid-node-hash? combined-hash))
+        }
+    )
+)
+
+(define-private (verify-merkle-proof 
+    (leaf-hash (buff 32))
+    (proof (list 20 (buff 32)))
+    (root (buff 32)))
+    ;; Verify the Merkle proof by folding over the proof elements and checking the final hash against the root
+    (let (
+        (proof-result (fold verify-proof-step
+            proof
+            { current-hash: leaf-hash, is-valid: true }))
+    )
+        (if (get is-valid proof-result)
+            (ok true)
+            (err ERR-INVALID-PROOF))
+    )
+)
