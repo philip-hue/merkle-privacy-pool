@@ -291,3 +291,27 @@
         )
     )
 )
+
+;; Admin Recovery Function
+(define-public (admin-recovery 
+    (token <ft-trait>)
+    (recipient principal)
+    (amount uint))
+    ;; Allow the contract owner to recover tokens in case of emergency
+    (begin
+        ;; Validate inputs
+        (asserts! (is-valid-token token) (err ERR-INVALID-INPUT))
+        
+        ;; Only contract owner can recover
+        (asserts! (is-contract-owner tx-sender) (err ERR-NOT-AUTHORIZED))
+        
+        ;; Validate recovery amount
+        (asserts! (> amount u0) (err ERR-INVALID-AMOUNT))
+        
+        ;; Transfer tokens with error handling
+        (match (as-contract (contract-call? token transfer amount tx-sender recipient none))
+            success (ok true)
+            error (err ERR-TRANSFER-FAILED)
+        )
+    )
+)
