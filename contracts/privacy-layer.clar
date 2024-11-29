@@ -330,3 +330,13 @@
     ;; Get the current Merkle root
     (ok (var-get merkle-root))
 )
+
+(define-read-only (check-nullifier-status (nullifier (buff 32)))
+    ;; Check the status of a nullifier
+    (map-get? nullifier-status { nullifier: nullifier })
+)
+
+(define-read-only (get-deposit-details (commitment (buff 32)))
+    ;; Get the details of a deposit by its commitment
+    (map-get? deposit-records { commitment: commitment })
+)
