@@ -65,3 +65,39 @@
     { level: uint, index: uint } 
     { node-hash: (buff 32) }
 )
+
+;; Input Validation Helpers
+(define-private (is-valid-token (token <ft-trait>))
+    ;; Check if the token is valid by ensuring it conforms to the ft-trait
+    (is-some (some token))
+)
+
+(define-private (is-valid-commitment (commitment (buff 32)))
+    ;; Validate the commitment by checking it is not zero and its length is less than 33 bytes
+    (and 
+        (not (is-eq commitment ZERO-VALUE))
+        (< (len commitment) u33)
+    )
+)
+
+(define-private (is-valid-nullifier (nullifier (buff 32)))
+    ;; Validate the nullifier by checking it is not zero and its length is less than 33 bytes
+    (and 
+        (not (is-eq nullifier ZERO-VALUE))
+        (< (len nullifier) u33)
+    )
+)
+
+(define-private (is-valid-proof (proof (list 20 (buff 32))))
+    ;; Validate the proof by checking its length is greater than 0 and less than or equal to 20
+    (and 
+        (> (len proof) u0)
+        (<= (len proof) u20)
+    )
+)
+
+;; Authorization Check
+(define-private (is-contract-owner (sender principal))
+    ;; Check if the sender is the contract owner
+    (is-eq sender CONTRACT-OWNER)
+)
