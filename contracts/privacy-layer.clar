@@ -136,3 +136,22 @@
         { level: level, index: index }
         { node-hash: hash })
 )
+
+;; Merkle Tree Update Logic
+(define-private (update-merkle-parent (level uint) (index uint))
+    ;; Update the parent node in the Merkle tree by combining the current node and its sibling
+    (let (
+        (parent-index (/ index u2))
+        (is-right-child (is-eq (mod index u2) u1))
+        (sibling-index (if is-right-child (- index u1) (+ index u1)))
+        (current-node (get-merkle-node level index))
+        (sibling-node (get-merkle-node level sibling-index))
+    )
+        (set-merkle-node 
+            (+ level u1) 
+            parent-index 
+            (if is-right-child
+                (combine-hashes sibling-node current-node)
+                (combine-hashes current-node sibling-node)))
+    )
+)
