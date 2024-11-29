@@ -101,3 +101,13 @@
     ;; Check if the sender is the contract owner
     (is-eq sender CONTRACT-OWNER)
 )
+
+;; Pause Control
+(define-public (toggle-contract-pause)
+    ;; Toggle the contract's paused state, only the contract owner can perform this action
+    (begin
+        (asserts! (is-contract-owner tx-sender) (err ERR-NOT-AUTHORIZED))
+        (var-set contract-paused (not (var-get contract-paused)))
+        (ok (var-get contract-paused))
+    )
+)
