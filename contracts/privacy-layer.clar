@@ -340,3 +340,12 @@
     ;; Get the details of a deposit by its commitment
     (map-get? deposit-records { commitment: commitment })
 )
+
+;; Contract Initialization
+(begin
+    ;; Initialize contract state variables
+    (var-set merkle-root ZERO-VALUE)
+    (var-set next-leaf-index u0)
+    (var-set contract-paused false)
+    (var-set total-deposited u0)
+)
