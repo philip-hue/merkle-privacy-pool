@@ -111,3 +111,28 @@
         (ok (var-get contract-paused))
     )
 )
+
+;; Internal Helper Functions
+(define-private (combine-hashes (left (buff 32)) (right (buff 32)))
+    ;; Combine two hashes using SHA-256
+    (sha256 (concat left right))
+)
+
+(define-private (is-valid-node-hash? (hash (buff 32)))
+    ;; Check if the node hash is valid by ensuring it is not zero
+    (not (is-eq hash ZERO-VALUE))
+)
+
+(define-private (get-merkle-node (level uint) (index uint))
+    ;; Retrieve the Merkle node hash at a specific level and index, default to ZERO-VALUE if not found
+    (default-to 
+        ZERO-VALUE
+        (get node-hash (map-get? merkle-nodes { level: level, index: index })))
+)
+
+(define-private (set-merkle-node (level uint) (index uint) (hash (buff 32)))
+    ;; Set the Merkle node hash at a specific level and index
+    (map-set merkle-nodes
+        { level: level, index: index }
+        { node-hash: hash })
+)
